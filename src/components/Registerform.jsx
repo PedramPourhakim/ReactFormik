@@ -25,7 +25,11 @@ const initialValues = {
   phone: ["", ""],
   favorits: [""],
 };
-const onSubmit = () => {};
+const onSubmit = (values,submitProps) => {
+  setTimeout(()=>{
+    submitProps.setSubmitting(false)
+  },5000)
+};
 const validate = (values) => {
   let errors = {};
   if (!values.name) {
@@ -86,6 +90,7 @@ const Registerform = () => {
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={onSubmit}
+      // validateOnMount
       // validateOnBlur={false}
       // validateOnChange={false}
     >
@@ -247,8 +252,17 @@ const Registerform = () => {
                      مشاهده فرم
                   </button>
                   <div className="text-center w-100">
-                    <button type="submit" className="btn btn-primary">
-                      ثبت نام
+                    <button type="submit" className="btn btn-primary"
+                    disabled={!(formik.dirty && formik.isValid) || 
+                      formik.isSubmitting}
+                    >
+                      {
+                        formik.isSubmitting ? (
+                          <div className="spinner-border" role={"status"}>
+                            <span className="visually-hidden">Loading...</span>
+                          </div>
+                        ):("ثبت نام")
+                      }
                     </button>
                   </div>
                 </Form>
