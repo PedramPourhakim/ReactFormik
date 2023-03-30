@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   ErrorMessage,
   FastField,
@@ -25,10 +25,11 @@ const initialValues = {
   phone: ["", ""],
   favorits: [""],
 };
-const onSubmit = (values,submitProps) => {
-  setTimeout(()=>{
-    submitProps.setSubmitting(false)
-  },5000)
+const onSubmit = (values, submitProps) => {
+  setTimeout(() => {
+    submitProps.setSubmitting(false);
+    submitProps.resetForm();
+  }, 5000);
 };
 const validate = (values) => {
   let errors = {};
@@ -72,6 +73,20 @@ const validateBio = (value) => {
   return error;
 };
 const Registerform = () => {
+  const [savedData, setSavedData] = useState(null);
+
+  const [myValues, setMyValues] = useState(null);
+
+  const handleSaveData = (formik) => {
+    localStorage.setItem("savedData", JSON.stringify(formik.values));
+  };
+  const handleGetSaveData = () => {
+    setMyValues(savedData);
+  };
+  useEffect(() => {
+    const localSavedData = JSON.parse(localStorage.getItem("savedData"));
+    setSavedData(localSavedData);
+  }, []);
   // const formik = useFormik({
   //  initialValues,
   //   onSubmit,
@@ -87,9 +102,10 @@ const Registerform = () => {
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={myValues || initialValues}
       validationSchema={validationSchema}
       onSubmit={onSubmit}
+      enableReinitialize
       // validateOnMount
       // validateOnBlur={false}
       // validateOnChange={false}
@@ -98,7 +114,7 @@ const Registerform = () => {
         return (
           <div className="auth_container container container-fluid d-flex justify-content-center align-items-center w-100 h-100 p-0">
             <div className="row w-100 justify-content-center align-items-center">
-              <div className="auth_box col-11 col-md-8 col-lg-6 col-xl-4 py-4 px-3">
+              <div className="auth_box col-12 col-md-12 col-lg-12 col-xl-12 py-4 px-3">
                 <Form className="row">
                   <h1 className="text-center">
                     <i className="fas fa-user-plus text-primary"></i>
@@ -224,46 +240,81 @@ const Registerform = () => {
                       {(props) => <FavoritsField {...props} />}
                     </FieldArray>
                   </div>
-                  <button
-                    className="btn btn-info" type="button"
-                    onClick={() => formik.validateField('bio')}
+                  {/* <button
+                    className="btn btn-info"
+                    type="button"
+                    onClick={() => formik.validateField("bio")}
                   >
                     اعتبار سنجی بیوگرافی
                   </button>
                   <button
-                    className="btn btn-info" type="button"
+                    className="btn btn-info"
+                    type="button"
                     onClick={() => formik.validateForm()}
                   >
                     اعتبار سنجی فرم
                   </button>
                   <button
-                    className="btn btn-success" type="button"
-                    onClick={() => formik.setFieldTouched('bio')}
+                    className="btn btn-success"
+                    type="button"
+                    onClick={() => formik.setFieldTouched("bio")}
                   >
-                     مشاهده بیوگرافی
+                    مشاهده بیوگرافی
                   </button>
                   <button
-                    className="btn btn-success" type="button"
-                    onClick={() => formik.setTouched({
-                      name:true,
-                      email:true
-                    })}
+                    className="btn btn-success"
+                    type="button"
+                    onClick={() =>
+                      formik.setTouched({
+                        name: true,
+                        email: true,
+                      })
+                    }
                   >
-                     مشاهده فرم
-                  </button>
+                    مشاهده فرم
+                  </button> */}
                   <div className="text-center w-100">
-                    <button type="submit" className="btn btn-primary"
-                    disabled={!(formik.dirty && formik.isValid) || 
-                      formik.isSubmitting}
-                    >
-                      {
-                        formik.isSubmitting ? (
-                          <div className="spinner-border" role={"status"}>
-                            <span className="visually-hidden">Loading...</span>
-                          </div>
-                        ):("ثبت نام")
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      disabled={
+                        !(formik.dirty && formik.isValid) || formik.isSubmitting
                       }
+                    >
+                      {formik.isSubmitting ? (
+                        <div className="spinner-border" role={"status"}>
+                          <span className="visually-hidden">Loading...</span>
+                        </div>
+                      ) : (
+                        "ثبت نام"
+                      )}
                     </button>
+                    {formik.dirty && formik.isValid ? (
+                      <button
+                        type="button"
+                        className="btn btn-warning mx-3"
+                        onClick={() => handleSaveData(formik)}
+                      >
+                        ذخیره در این سیستم
+                      </button>
+                    ) : null}
+                    {savedData ? (
+                      <button
+                        type="button"
+                        className="btn btn-success mx-3"
+                        onClick={handleGetSaveData}
+                      >
+                        دریافت آخرین اطلاعات در این سیستم
+                      </button>
+                    ) : null}
+                    {formik.dirty ? (
+                      <button
+                        type="reset"
+                        className="btn btn-danger mx-3"
+                      >
+                          پاکسازی
+                      </button>
+                    ) : null}
                   </div>
                 </Form>
               </div>
