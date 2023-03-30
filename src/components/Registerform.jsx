@@ -12,9 +12,10 @@ import * as Yup from "yup";
 import PersonalField from "./PersonalField";
 import PersonalError from "./PersonalError";
 import FavoritsField from "./FavoritsField";
+import FormikControl from "./formikElements/FormikControl";
 
 const initialValues = {
-  name: "Pedram",
+  name: "",
   email: "",
   password: "",
   bio: "",
@@ -24,6 +25,9 @@ const initialValues = {
   },
   phone: ["", ""],
   favorits: [""],
+  education :1,
+  gender:1,
+  skill:[]
 };
 const onSubmit = (values, submitProps) => {
   setTimeout(() => {
@@ -62,6 +66,7 @@ const validationSchema = Yup.object({
   }),
   phone: Yup.array().of(Yup.string().required("لطفا این قسمت را پر کنید")),
   favorits: Yup.array().of(Yup.string().required("لطفا این قسمت را پر کنید")),
+  education: Yup.string().required("لطفا این قسمت را پر کنید")
 });
 const validateBio = (value) => {
   let error;
@@ -72,6 +77,22 @@ const validateBio = (value) => {
   }
   return error;
 };
+const educations = [
+    {id:1 , value : 'دیپلم'},
+    {id:2 , value : 'کارشناسی'},
+    {id:3 , value : 'کارشناسی ارشد'},
+    {id:4 , value : 'دکترا'},
+]
+const gender = [
+  {id:1 , value : 'مرد'},
+  {id:2 , value : 'زن'},
+]
+const skills = [
+  {id:1 , value : 'HTML'},
+  {id:2 , value : 'CSS'},
+  {id:3 , value : 'JS'},
+  {id:4 , value : 'React'},
+]
 const Registerform = () => {
   const [savedData, setSavedData] = useState(null);
 
@@ -93,12 +114,7 @@ const Registerform = () => {
   //   // validate,
   //   validationSchema
   // });
-  const attrs = {
-    type: "text",
-    className: "form-control",
-    id: "name",
-    name: "name",
-  };
+ 
 
   return (
     <Formik
@@ -114,67 +130,53 @@ const Registerform = () => {
         return (
           <div className="auth_container container container-fluid d-flex justify-content-center align-items-center w-100 h-100 p-0">
             <div className="row w-100 justify-content-center align-items-center">
-              <div className="auth_box col-12 col-md-12 col-lg-12 col-xl-12 py-4 px-3">
+              <div className="auth_box col-11 col-md-12 col-lg-6 col-xl-8 py-4 px-3">
                 <Form className="row">
                   <h1 className="text-center">
                     <i className="fas fa-user-plus text-primary"></i>
                   </h1>
-                  <div className="mb-3">
-                    <label htmlFor="name" className="form-label">
-                      نام
-                    </label>
-                    <FastField
-                      {...attrs}
-                      placeholder="لطفا از حروف لاتین استفاده کنید"
-                    />
-                    <ErrorMessage name="name" component={PersonalError} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="email" className="form-label">
-                      ایمیل
-                    </label>
-                    <FastField
-                      type="email"
-                      className="form-control"
-                      id="email"
-                      name="email"
-                      // {...formik.getFieldProps("email")}
-                    />
-                    <ErrorMessage name="email">
-                      {(error) => (
-                        <small
-                          className="d-block text-center 
-                  text-danger"
-                        >
-                          {error}
-                        </small>
-                      )}
-                    </ErrorMessage>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="password" className="form-label">
-                      رمز عبور
-                    </label>
-                    <FastField name="password">
-                      {(props) => <PersonalField {...props} />}
-                    </FastField>
-                    {/* <ErrorMessage name="password" /> */}
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="bio" className="form-label">
-                      بیوگرافی
-                    </label>
-                    <FastField
-                      type="text"
-                      className="form-control"
-                      id="bio"
-                      name="bio"
-                      component="textarea"
-                      validate={validateBio}
-                      // {...formik.getFieldProps("password")}
-                    />
-                    <ErrorMessage name="bio" component={PersonalError} />
-                  </div>
+                  <FormikControl
+                  control="input"
+                  type="text"
+                  label="نام"
+                  name="name"
+                  />
+                   <FormikControl
+                  control="input"
+                  type="email"
+                  label="ایمیل"
+                  name="email"
+                  />
+                  <FormikControl
+                  control="input"
+                  type="password"
+                  label="رمز عبور"
+                  name="password"
+                  />
+                   <FormikControl
+                  control="textarea"
+                  label="بیوگرافی"
+                  name="bio"
+                  validate = {validateBio}
+                  />
+                  <FormikControl
+                  control="select"
+                  label="تحصیلات"
+                  name="education"
+                  options = {educations}
+                  />
+                   <FormikControl
+                  control="radio"
+                  label="جنسیت"
+                  name="gender"
+                  options = {gender}
+                  />
+                   <FormikControl
+                  control="checkbox"
+                  label="تخصص"
+                  name="skill"
+                  options = {skills}
+                  />
                   <div className="mb-3 col-6">
                     <label htmlFor="city" className="form-label">
                       شهر
