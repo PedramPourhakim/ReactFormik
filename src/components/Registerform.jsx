@@ -6,16 +6,24 @@ import {
   Form,
   Formik,
   useFormik,
+  FieldArray,
 } from "formik";
 import * as Yup from "yup";
 import PersonalField from "./PersonalField";
 import PersonalError from "./PersonalError";
+import FavoritsField from "./FavoritsField";
 
 const initialValues = {
   name: "Pedram",
   email: "",
   password: "",
   bio: "",
+  address: {
+    city: "",
+    postalCode: "",
+  },
+  phone: ["", ""],
+  favorits: [""],
 };
 const onSubmit = () => {};
 const validate = (values) => {
@@ -43,6 +51,12 @@ const validationSchema = Yup.object({
   password: Yup.string()
     .required("لطفا این قسمت را پر کنید")
     .min(8, "حداقل 8 کاراکتر وارد کنید"),
+  address: Yup.object({
+    city: Yup.string().required("لطفا این قسمت را پر کنید"),
+    postalCode: Yup.string().required("لطفا این قسمت را پر کنید"),
+  }),
+  phone: Yup.array().of(Yup.string().required("لطفا این قسمت را پر کنید")),
+  favorits: Yup.array().of(Yup.string().required("لطفا این قسمت را پر کنید")),
 });
 const Registerform = () => {
   // const formik = useFormik({
@@ -67,7 +81,7 @@ const Registerform = () => {
       <div className="auth_container container-fluid d-flex justify-content-center align-items-center w-100 h-100-vh p-0">
         <div className="row w-100 justify-content-center align-items-center">
           <div className="auth_box col-11 col-md-8 col-lg-6 col-xl-4 py-4 px-3">
-            <Form>
+            <Form className="row">
               <h1 className="text-center">
                 <i className="fas fa-user-plus text-primary"></i>
               </h1>
@@ -93,10 +107,11 @@ const Registerform = () => {
                   // {...formik.getFieldProps("email")}
                 />
                 <ErrorMessage name="email">
-                  {error => (
+                  {(error) => (
                     <small
                       className="d-block text-center 
-                  text-danger">
+                  text-danger"
+                    >
                       {error}
                     </small>
                   )}
@@ -124,6 +139,68 @@ const Registerform = () => {
                   // {...formik.getFieldProps("password")}
                 />
                 <ErrorMessage name="bio" />
+              </div>
+              <div className="mb-3 col-6">
+                <label htmlFor="city" className="form-label">
+                  شهر
+                </label>
+                <FastField
+                  type="text"
+                  className="form-control"
+                  id="city"
+                  name="address.city"
+                />
+                <ErrorMessage name="address.city" component={PersonalError} />
+              </div>
+              <div className="mb-3 col-6">
+                <label htmlFor="postalCode" className="form-label">
+                  کد پستی
+                </label>
+                <FastField
+                  type="text"
+                  className="form-control"
+                  id="postalCode"
+                  name="address.postalCode"
+                  // {...formik.getFieldProps("password")}
+                />
+                <ErrorMessage
+                  name="address.postalCode"
+                  component={PersonalError}
+                />
+              </div>
+              <div className="mb-3 col-6">
+                <label htmlFor="mobilePhone" className="form-label">
+                  شماره موبایل
+                </label>
+                <FastField
+                  type="text"
+                  className="form-control"
+                  id="mobilePhone"
+                  name="phone[0]"
+                />
+                <ErrorMessage name="phone[0]" component={PersonalError} />
+              </div>
+              <div className="mb-3 col-6">
+                <label htmlFor="telePhone" className="form-label">
+                  تلفن ثابت
+                </label>
+                <FastField
+                  type="text"
+                  className="form-control"
+                  id="telePhone"
+                  name="phone[1]"
+                  // {...formik.getFieldProps("password")}
+                />
+                <ErrorMessage name="phone[1]" component={PersonalError} />
+              </div>
+              <div className="mb-3">
+                <FieldArray
+                  type="text"
+                  className="form-control"
+                  name="favorits"
+                >
+                  {props =><FavoritsField {...props}/>}
+                </FieldArray>
               </div>
               <div className="text-center w-100">
                 <button type="submit" className="btn btn-primary">
