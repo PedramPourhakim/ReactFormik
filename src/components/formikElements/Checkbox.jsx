@@ -19,7 +19,7 @@ const Checkbox = (props) => {
                 id={o.value}
                 {...field}
                 value={o.value}
-                checked={field.value.includes(o.value)}
+                checked={field.value?.includes(o.value)}
               />
               <label htmlFor={o.value} className="mx-1 ms-4">
                 {o.value}
